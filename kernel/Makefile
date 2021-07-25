@@ -1,6 +1,6 @@
 KERNEL := vinix.elf
 
-PROD = false
+PROD = true
 
 CC = cc
 LD = ld

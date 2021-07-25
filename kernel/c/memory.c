@@ -7,7 +7,7 @@ void *memory__malloc(size_t);
 void *memory__realloc(void *, size_t);
 
 void free(void *ptr) {
-    return memory__free(ptr);
+    memory__free(ptr);
 }
 
 void *malloc(size_t size) {

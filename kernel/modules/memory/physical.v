@@ -145,19 +145,29 @@ pub fn pmm_free(ptr voidptr, count u64) {
 
 __global (
 	kernel_alloc_base = u64(0xfffff00000000000)
+	kernel_alloc_spacing = u64(0x1000000)
 )
 
-const kernel_alloc_spacing = u64(0x1000000)
+fn C.dlmalloc(u64) voidptr
+fn C.dlrealloc(voidptr, u64) voidptr
+fn C.dlfree(voidptr)
 
 pub fn free(ptr voidptr) {
-	realloc(ptr, 0)
+	// phys_realloc(ptr, 0)
+	C.dlfree(ptr)
 }
 
 pub fn malloc(size u64) voidptr {
-	return realloc(voidptr(0), size)
+	// return phys_realloc(voidptr(0), size)
+	return C.dlmalloc(size)
 }
 
 pub fn realloc(ptr voidptr, new_size u64) voidptr {
+	// return phys_realloc(ptr, new_size)
+	return C.dlrealloc(ptr, new_size)
+}
+
+pub fn phys_realloc(ptr voidptr, new_size u64) voidptr {
 	if vmm_initialised == false {
 		lib.kpanic(c'realloc: No realloc() before VMM')
 	}
@@ -217,7 +227,6 @@ pub fn realloc(ptr voidptr, new_size u64) voidptr {
 			cur_page += page_size
 		}
 	}
-
 	// Check if we acted as free()
 	if new_size == 0 {
 		return 0
