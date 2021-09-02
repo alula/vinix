@@ -1,0 +1,54 @@
+diff --git a/3rdparty/python-orig/config.sub b/3rdparty/python-workdir/config.sub
+index ba37cf9..2a84886 100755
+--- a/3rdparty/python-orig/config.sub
++++ b/3rdparty/python-workdir/config.sub
+@@ -1394,7 +1394,7 @@ case $os in
+ 	      | -powermax* | -dnix* | -nx6 | -nx7 | -sei* | -dragonfly* \
+ 	      | -skyos* | -haiku* | -rdos* | -toppers* | -drops* | -es* \
+ 	      | -onefs* | -tirtos* | -phoenix* | -fuchsia* | -redox* | -bme* \
+-	      | -midnightbsd*)
++	      | -midnightbsd* | -vinix*)
+ 	# Remember, each alternative MUST END IN *, to match a version number.
+ 		;;
+ 	-qnx*)
+diff --git a/3rdparty/python-orig/configure.ac b/3rdparty/python-workdir/configure.ac
+index 8fe5fa5..85c9e28 100644
+--- a/3rdparty/python-orig/configure.ac
++++ b/3rdparty/python-workdir/configure.ac
+@@ -403,6 +403,9 @@ then
+ 	*-*-vxworks*)
+ 	    ac_sys_system=VxWorks
+ 	    ;;
++	*-vinix*)
++		ac_sys_system=Vinix
++		;;
+ 	*)
+ 		# for now, limit cross builds to known configurations
+ 		MACHDEP="unknown"
+@@ -452,6 +455,9 @@ if test "$cross_compiling" = yes; then
+ 	*-*-vxworks*)
+ 		_host_cpu=$host_cpu
+ 		;;
++	*-vinix*)
++		_host_cpu=$host_cpu
++		;;
+ 	*)
+ 		# for now, limit cross builds to known configurations
+ 		MACHDEP="unknown"
+@@ -2674,7 +2680,7 @@ then
+ 			BLDSHARED="$LDSHARED"
+ 		fi
+ 		;;
+-	Linux*|GNU*|QNX*|VxWorks*)
++	Linux*|GNU*|QNX*|VxWorks*|Vinix*)
+ 		LDSHARED='$(CC) -shared'
+ 		LDCXXSHARED='$(CXX) -shared';;
+ 	FreeBSD*)
+@@ -2753,6 +2759,7 @@ then
+ 		then CCSHARED="-fPIC"
+ 		else CCSHARED="-Kpic -belf"
+ 		fi;;
++	Vinix*) CCSHARED="-fPIC";;
+ 	VxWorks*)
+ 		CCSHARED="-fpic -D__SO_PICABILINUX__  -ftls-model=global-dynamic"
+ 	esac

@@ -1,0 +1,13 @@
+diff --git a/3rdparty/libffi-orig/config.sub b/3rdparty/libffi-workdir/config.sub
+index 14b5150..9e8d8d4 100644
+--- a/3rdparty/libffi-orig/config.sub
++++ b/3rdparty/libffi-workdir/config.sub
+@@ -1722,7 +1722,7 @@ case $os in
+ 	     | skyos* | haiku* | rdos* | toppers* | drops* | es* \
+ 	     | onefs* | tirtos* | phoenix* | fuchsia* | redox* | bme* \
+ 	     | midnightbsd* | amdhsa* | unleashed* | emscripten* | wasi* \
+-	     | nsk* | powerunix* | genode* | zvmoe* )
++	     | nsk* | powerunix* | genode* | zvmoe* | vinix* )
+ 		;;
+ 	# This one is extra strict with allowed versions
+ 	sco3.2v2 | sco3.2v[4-9]* | sco5v6*)

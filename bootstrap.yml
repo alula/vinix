@@ -34,11 +34,11 @@ sources:
 
   - name: mlibc
     subdir: '3rdparty'
-    url: 'https://github.com/managarm/mlibc/archive/8050f6a698e261e4f9440bb2f80752e9678d04be.tar.gz'
+    url: 'https://github.com/managarm/mlibc/archive/5e323f6c9ff4be80e20aa477c43965661ba13eff.tar.gz'
     format: 'tar.gz'
-    extract_path: 'mlibc-8050f6a698e261e4f9440bb2f80752e9678d04be'
+    extract_path: 'mlibc-5e323f6c9ff4be80e20aa477c43965661ba13eff'
     patch-path-strip: 3
-    version: '12.rolling'
+    version: '13.rolling'
 
   - name: pkg-config
     subdir: '3rdparty'
@@ -72,6 +72,16 @@ sources:
     extract_path: 'limine-v2.49.2'
     patch-path-strip: 3
     version: '2.49.2'
+
+  - name: python
+    subdir: '3rdparty'
+    url: 'https://www.python.org/ftp/python/3.9.7/Python-3.9.7.tgz'
+    format: 'tar.gz'
+    extract_path: 'Python-3.9.7'
+    patch-path-strip: 3
+    version: '3.9.7'
+    regenerate: 
+      - args: ['autoreconf', '-f', '-i']
 
 tools:
   - name: host-autoconf-v2.69
@@ -216,6 +226,17 @@ tools:
         install:
           - args: ['make', 'install-strip-target-libstdc++-v3']
 
+  - name: host-python
+    from_source: python
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--prefix=@PREFIX@'
+    compile:
+      - args: ['make', '-j@PARALLELISM@']
+    install:
+      - args: ['make', 'install']
+
 tasks:
   - name: make-iso
     tools_required:
@@ -229,6 +250,7 @@ tasks:
       - grep
       - tzdata
       - nano
+      - python
       - binutils
       - gcc
       - kernel
@@ -940,5 +962,233 @@ packages:
     build:
       - args: ['make', '-j@PARALLELISM@']
       - args: ['make', 'install-strip']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: util-linux-libs
+    source:
+      subdir: '3rdparty'
+      url: 'https://mirrors.edge.kernel.org/pub/linux/utils/util-linux/v2.37/util-linux-2.37.2.tar.gz'
+      format: 'tar.gz'
+      extract_path: 'util-linux-2.37.2'
+      patch-path-strip: 3
+      version: '2.37.2'
+      regenerate:
+      - args: ['./autogen.sh']
+    tools_required:
+      - host-gcc
+    pkgs_required:
+      - mlibc
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-vinix'
+        - '--prefix=/usr'
+        - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
+        - '--prefix=/usr'
+        - '--exec-prefix=/usr'
+        - '--libdir=/usr/lib'
+        - '--bindir=/usr/bin'
+        - '--sbindir=/usr/sbin'
+        - '--without-udev'
+        - '--disable-nls'
+        - '--disable-static'
+        - '--without-python'
+        - '--without-systemd'
+        - '--without-systemdsystemunitdir'
+        - '--disable-fdisks'
+        - '--disable-mount'
+        - '--disable-losetup'
+        - '--disable-zramctl'
+        - '--disable-fsck'
+        - '--disable-partx'
+        - '--disable-uuidd'
+        - '--disable-wipefs'
+        - '--disable-mountpoint'
+        - '--disable-fallocate'
+        - '--disable-unshare'
+        - '--disable-nsenter'
+        - '--disable-setpriv'
+        - '--disable-hardlink'
+        - '--disable-eject'
+        - '--disable-agetty'
+        - '--disable-plymouth_support'
+        - '--disable-cramfs'
+        - '--disable-bfs'
+        - '--disable-minix'
+        - '--disable-fdformat'
+        - '--disable-hwclock'
+        - '--disable-hwclock-cmos'
+        - '--disable-hwclock-gplv3'
+        - '--disable-mkfs'
+        - '--disable-isosize'
+        - '--disable-lsblk'
+        - '--disable-lslogins'
+        - '--disable-wdctl'
+        - '--disable-swaplabel'
+        - '--disable-mkswap'
+        - '--disable-cal'
+        - '--disable-logger'
+        - '--disable-look'
+        - '--disable-mcookie'
+        - '--disable-namei'
+        - '--disable-getopt'
+        - '--disable-blockdev'
+        - '--disable-lslocks'
+        - '--disable-switch_root'
+        - '--disable-pivot_root'
+        - '--disable-flock'
+        - '--disable-lsmem'
+        - '--disable-chmem'
+        - '--disable-ipcmk'
+        - '--disable-ipcrm'
+        - '--disable-ipcs'
+        - '--disable-irqtop'
+        - '--disable-lsirq'
+        - '--disable-choom'
+        - '--disable-renice'
+        - '--disable-rfkill'
+        - '--disable-setsid'
+        - '--disable-ctrlaltdel'
+        - '--disable-script'
+        - '--disable-scriptreplay'
+        - '--disable-scriptlive'
+        - '--disable-col'
+        - '--disable-colcrt'
+        - '--disable-colrm'
+        - '--disable-column'
+        - '--disable-hexdump'
+        - '--disable-rev'
+        - '--disable-kill'
+        - '--disable-last'
+        - '--disable-utmpdump'
+        - '--disable-mesg'
+        - '--disable-raw'
+        - '--disable-rename'
+        - '--disable-chfn-chsh'
+        - '--disable-login'
+        - '--disable-nologin'
+        - '--disable-sulogin'
+        - '--disable-su'
+        - '--disable-runuser'
+        - '--disable-ul'
+        - '--disable-more'
+        - '--disable-setterm'
+        - '--disable-schedutils'
+        - '--disable-pg-bell'
+        - '--disable-fstrim'
+        - '--disable-swapon'
+        - '--disable-lscpu'
+        - '--disable-chcpu'
+        - '--disable-blockdev'
+        - '--disable-prlimit'
+        - '--disable-lsipc'
+        - '--disable-lsns'
+        - '--disable-readprofile'
+        - '--disable-dmesg'
+        - '--disable-fincore'
+        - '--disable-fsfreeze'
+        - '--disable-blkdiscard'
+        - '--disable-blkzone'
+        - '--disable-ldattach'
+        - '--disable-rtcwake'
+        - '--disable-setarch'
+        - '--disable-tunelp'
+        - '--disable-wall'
+        - '--disable-bash-completion'
+        - '--without-cap-ng'
+        - '--without-btrfs'
+        - '--without-selinux'
+        - '--without-audit'
+        - '--enable-usrdir-path'
+        - '--disable-makeinstall-chown'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: libexpat
+    source:
+      subdir: '3rdparty'
+      url: 'https://github.com/libexpat/libexpat/releases/download/R_2_4_1/expat-2.4.1.tar.gz'
+      format: 'tar.gz'
+      extract_path: 'expat-2.4.1'
+      patch-path-strip: 3
+      version: '2.4.1'
+    tools_required:
+      - host-gcc
+    pkgs_required:
+      - mlibc
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-vinix'
+        - '--prefix=/usr'
+        - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
+        - '--enable-shared'
+        - '--disable-static'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: libffi
+    source:
+      subdir: '3rdparty'
+      url: 'https://github.com/libffi/libffi/releases/download/v3.4.2/libffi-3.4.2.tar.gz'
+      format: 'tar.gz'
+      extract_path: 'libffi-3.4.2'
+      patch-path-strip: 3
+      version: '3.4.2'
+    tools_required:
+      - host-gcc
+    pkgs_required:
+      - mlibc
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-vinix'
+        - '--prefix=/usr'
+        - '--with-sysroot=@SYSROOT_DIR@'
+    build:
+      - args: ['make', '-j@PARALLELISM@']
+      - args: ['make', 'install']
+        environ:
+          DESTDIR: '@THIS_COLLECT_DIR@'
+
+  - name: python
+    from_source: python
+    tools_required:
+      - host-gcc
+      - host-python
+    pkgs_required:
+      - mlibc
+      - zlib
+      - ncurses
+      - openssl
+      - libexpat
+      - libffi
+      - util-linux-libs # for libuuid
+    configure:
+      - args:
+        - '@THIS_SOURCE_DIR@/configure'
+        - '--host=x86_64-vinix'
+        - '--build=x86_64-linux-gnu'
+        - '--prefix=/usr'
+        - '--enable-shared'
+        - '--with-sysroot=@SYSROOT_DIR@' # Set libtool's lt_sysroot.
+        - '--with-system-ffi'
+        - '--with-system-expat'
+        - '--disable-ipv6'
+        - '--without-ensurepip'
+        environ:
+          CONFIG_SITE: '@SOURCE_ROOT@/patches/python/python-config-site'
+          PKG_CONFIG_SYSROOT_DIR: '@BUILD_ROOT@/system-root'
+          PKG_CONFIG_LIBDIR: '@BUILD_ROOT@/system-root/usr/lib/pkgconfig:@BUILD_ROOT@/system-root/usr/share/pkgconfig'
+    build:
+      - args: ['make', '-j@PARALLELISM@', 'sharedmods']
+      - args: ['make', 'install']
         environ:
           DESTDIR: '@THIS_COLLECT_DIR@'

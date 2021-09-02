@@ -1,0 +1,13 @@
+diff --git a/3rdparty/libexpat-orig/conftools/config.sub b/3rdparty/libexpat-workdir/conftools/config.sub
+index 4d89efe..36a982e 100755
+--- a/3rdparty/libexpat-orig/conftools/config.sub
++++ b/3rdparty/libexpat-workdir/conftools/config.sub
+@@ -1743,7 +1743,7 @@ case $os in
+ 	     | skyos* | haiku* | rdos* | toppers* | drops* | es* \
+ 	     | onefs* | tirtos* | phoenix* | fuchsia* | redox* | bme* \
+ 	     | midnightbsd* | amdhsa* | unleashed* | emscripten* | wasi* \
+-	     | nsk* | powerunix* | genode* | zvmoe* | qnx* | emx*)
++	     | nsk* | powerunix* | genode* | zvmoe* | qnx* | emx* | vinix*)
+ 		;;
+ 	# This one is extra strict with allowed versions
+ 	sco3.2v2 | sco3.2v[4-9]* | sco5v6*)

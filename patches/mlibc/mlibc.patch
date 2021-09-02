@@ -77,10 +77,19 @@ index 41d4248..f246d1d 100644
  #define TIOCSTI 0x5412
  #define TIOCGWINSZ 0x5413
 diff --git a/3rdparty/mlibc-orig/options/posix/generic/unistd-stubs.cpp b/3rdparty/mlibc-workdir/options/posix/generic/unistd-stubs.cpp
-index 4725736..d5636a8 100644
+index 4725736..0da6aff 100644
 --- a/3rdparty/mlibc-orig/options/posix/generic/unistd-stubs.cpp
 +++ b/3rdparty/mlibc-workdir/options/posix/generic/unistd-stubs.cpp
-@@ -812,12 +812,12 @@ int ttyname_r(int, char *, size_t) {
+@@ -768,6 +768,8 @@ unsigned long sysconf(int number) {
+ 		case _SC_LINE_MAX:
+ 			// Linux defines it as 2048.
+ 			return 2048;
++		case _SC_TTY_NAME_MAX:
++			return 20;
+ 		default:
+ 			mlibc::panicLogger() << "\e[31mmlibc: sysconf() call is not implemented, number: " << number << "\e[39m" << frg::endlog;
+ 			__builtin_unreachable();
+@@ -812,12 +814,12 @@ int ttyname_r(int, char *, size_t) {
  }
  
  int unlink(const char *path) {
@@ -95,6 +104,18 @@ index 4725736..d5636a8 100644
  		errno = e;
  		return -1;
  	}
+diff --git a/3rdparty/mlibc-orig/options/posix/include/unistd.h b/3rdparty/mlibc-workdir/options/posix/include/unistd.h
+index 5b817c6..d632d19 100644
+--- a/3rdparty/mlibc-orig/options/posix/include/unistd.h
++++ b/3rdparty/mlibc-workdir/options/posix/include/unistd.h
+@@ -115,6 +115,7 @@ extern "C" {
+ #define _SC_JOB_CONTROL 13
+ #define _SC_HOST_NAME_MAX 14
+ #define _SC_LINE_MAX 15
++#define _SC_TTY_NAME_MAX 16
+ 
+ #define STDERR_FILENO 2
+ #define STDIN_FILENO 0
 diff --git a/3rdparty/mlibc-workdir/sysdeps/vinix/crt-x86_64/crt0.S b/3rdparty/mlibc-workdir/sysdeps/vinix/crt-x86_64/crt0.S
 new file mode 100644
 index 0000000..06ab8a7
